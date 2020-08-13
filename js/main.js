@@ -5,10 +5,9 @@
     var test = d.createElement("button");
     test.innerHTML = "Click me!";
     test.addEventListener("click", function(){
-        var bnd = new Band("Test", "test");
-        console.log(bnd)
-        bandList.addList(bnd);
-        console.log(bandList.getList());
+        bandList.addList(new Band("Test", "test"));
+        var person = new Solo("Justin", "Bieber", "Pop");
+        console.log(bandList.addList(person).getList());
     });
 
     app.appendChild(test);

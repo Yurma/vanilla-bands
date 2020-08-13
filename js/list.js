@@ -3,12 +3,33 @@ function Band(name, genre) {
     this.genre = genre;
 }
 
+function Solo(firstName, lastName, genre) {
+    return new Band(`${firstName} ${lastName}`, genre);
+}
+
 function Bands() {
-    this.list = [];
+    let list = [];
+    let usedIds = [];
     this.getList = function() {
-        return this.list;
+        return list;
     }
     this.addList = function(band) {
-        this.list.push(band);
+        var bandId = (function (ids) {
+            var id = 0;
+            (function findId () {   
+            if(ids.includes(id, 0)) {
+                id++;
+                findId();
+            } else {
+                return;
+            }}())
+            return id;
+        }(usedIds));
+        
+        usedIds.push(bandId);
+        var newBand = band;
+        newBand.id = bandId;
+        list.push(newBand);
+        return this;
     }
 }
