@@ -18,7 +18,8 @@ function Bands() {
     }
     this.removeById = function(id) {
         list = list.filter(band => band.id !== id);
-        return list;
+        document.querySelector("#app").querySelector("div#list").querySelector(`div#item${id}`).remove();
+        return true;
     }
     this.addList = function(band) {
         var bandId = (function (ids) {
@@ -37,7 +38,7 @@ function Bands() {
         var newBand = band;
         newBand.id = bandId;
         list.push(newBand);
+        newItem.call(this, newBand);
         return this;
     }
 }
-var bandList = new Bands();

@@ -16,13 +16,13 @@ function renderItem(type, value = "", {attributes, events} = {}) {
     return element;
 }
 
-function renderTree() {
-    this.appendChild(renderNew());
+function renderTree(list) {
+    this.appendChild(renderNew(list));
     this.appendChild(renderList());
     return this;
 }
 
-function renderNew() {
+function renderNew(bandList) {
     var newItemDiv = renderItem("div");
     var chooseRadioDiv = renderItem("div");
 
@@ -55,14 +55,12 @@ function renderNew() {
         if(bandRadio.checked) {
             var bandName = bandForm.querySelector("input#name").value;
             var genre = bandForm.querySelector("input#genre").value;
-            var bandId = bandList.addList(new Band(bandName, genre)).lastId;
-            newItem(bandList.getList().filter(band => band.id === bandId)[0]);
+            bandList.addList(new Band(bandName, genre)).lastId;
         }else if(soloRadio.checked) {
             var soloFirstName = soloForm.querySelector("input#firstName").value;
             var soloLastName = soloForm.querySelector("input#lastName").value;
             var genre = soloForm.querySelector("input#genre").value;
-            var bandId = bandList.addList(new Solo(soloFirstName, soloLastName, genre)).lastId;
-            newItem(bandList.getList().filter(band => band.id === bandId)[0]);
+            bandList.addList(new Solo(soloFirstName, soloLastName, genre)).lastId;
         }
         console.log(bandList.getList());
     }}});
@@ -124,7 +122,5 @@ function newItem(band) {
 }
 
 function removeItem(id) {
-    bandList.removeById(id);
-    document.querySelector("#app").querySelector("div#list").querySelector(`div#item${id}`).remove();
-    return true;
+    return this.removeById(id);
 }

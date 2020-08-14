@@ -1,3 +1,5 @@
 (function(d, w){
-    renderTree.apply(d.querySelector("#app"));
+    var bandList = new Bands();
+
+    renderTree.call(d.querySelector("#app"), bandList);
 }(document, window))
