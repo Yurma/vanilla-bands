@@ -5,9 +5,8 @@ function Band(name, genre) {
 }
 
 function Solo(firstName, lastName, genre) {
-    var solo = new Band(`${firstName} ${lastName}`, genre);
-    solo.type = "Solo";
-    return solo;
+    Band.call(this, `${firstName} ${lastName}`, genre)
+    this.type = "Solo";
 }
 
 function Bands() {
