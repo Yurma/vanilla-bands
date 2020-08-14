@@ -17,15 +17,19 @@ function renderItem(type, value = "", {attributes, events} = {}) {
 }
 
 function renderTree() {
-    var bandList = new Bands();
+    this.appendChild(renderNew());
+    this.appendChild(renderList());
+    return this;
+}
 
+function renderNew() {
     var newItemDiv = renderItem("div");
     var chooseRadioDiv = renderItem("div");
 
     var bandForm = renderBandForm();
     var soloForm = renderSoloForm();
 
-    var bandRadio = renderItem("input", null, {attributes: {"type": "radio","name": "type", "id": "band", "value": "band"}, events: {"click": function() {
+    var bandRadio = renderItem("input", null, {attributes: {"type": "radio","name": "type", "id": "band", "value": "band", "checked": ""}, events: {"click": function() {
         var parent = this.parentNode.parentNode;
         var formDiv = parent.querySelector("div#form");
         if(this.checked) {
@@ -51,15 +55,19 @@ function renderTree() {
         if(bandRadio.checked) {
             var bandName = bandForm.querySelector("input#name").value;
             var genre = bandForm.querySelector("input#genre").value;
-            bandList.addList(new Band(bandName, genre));
+            var bandId = bandList.addList(new Band(bandName, genre)).lastId;
+            newItem(bandList.getList().filter(band => band.id === bandId)[0]);
         }else if(soloRadio.checked) {
             var soloFirstName = soloForm.querySelector("input#firstName").value;
             var soloLastName = soloForm.querySelector("input#lastName").value;
             var genre = soloForm.querySelector("input#genre").value;
-            bandList.addList(new Solo(soloFirstName, soloLastName, genre));
+            var bandId = bandList.addList(new Solo(soloFirstName, soloLastName, genre)).lastId;
+            newItem(bandList.getList().filter(band => band.id === bandId)[0]);
         }
         console.log(bandList.getList());
     }}});
+
+    formDiv.appendChild(bandForm);
 
     chooseRadioDiv.appendChild(bandRadio);
     chooseRadioDiv.appendChild(soloRadio);
@@ -88,4 +96,35 @@ function renderSoloForm() {
     div.appendChild(inputLastName);
     div.appendChild(inputGenre);
     return div;
+}
+
+function renderList() {
+    var listDiv = renderItem("div", "List", {attributes: {"id": "list"}});
+
+    return listDiv;
+}
+
+function newItem(band) {
+    var list = document.querySelector("#app").querySelector("div#list");
+
+    var itemDiv = renderItem("div", null, {attributes: {"id": `item${band.id}`} });
+    var itemNameSpan = renderItem("span", `${band.type == "Band" ? "Band " : "Musician "}${band.bandName} - `);
+    var genreSpan = renderItem("span", `Genre: ${band.genre}`);
+
+    var actionsDiv = renderItem("div", null, {attributes: {"class": "actions"}});
+
+    actionsDiv.appendChild(
+        renderItem("button", "Remove", {events: {"click": removeItem.bind(this, band.id)}})
+    )
+
+    itemDiv.appendChild(itemNameSpan);
+    itemDiv.appendChild(genreSpan);
+    itemDiv.appendChild(actionsDiv);
+    list.appendChild(itemDiv);
+}
+
+function removeItem(id) {
+    bandList.removeById(id);
+    document.querySelector("#app").querySelector("div#list").querySelector(`div#item${id}`).remove();
+    return true;
 }

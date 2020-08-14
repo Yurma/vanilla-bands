@@ -12,7 +12,12 @@ function Solo(firstName, lastName, genre) {
 function Bands() {
     let list = [];
     let usedIds = [];
+    this.lastId = null;
     this.getList = function() {
+        return list;
+    }
+    this.removeById = function(id) {
+        list = list.filter(band => band.id !== id);
         return list;
     }
     this.addList = function(band) {
@@ -27,7 +32,7 @@ function Bands() {
             }}())
             return id;
         }(usedIds));
-        
+        this.lastId = bandId;
         usedIds.push(bandId);
         var newBand = band;
         newBand.id = bandId;
@@ -35,3 +40,4 @@ function Bands() {
         return this;
     }
 }
+var bandList = new Bands();

@@ -1,3 +1,3 @@
 (function(d, w){
-    d.querySelector("#app").appendChild(renderTree());
+    renderTree.apply(d.querySelector("#app"));
 }(document, window))
