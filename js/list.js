@@ -1,4 +1,13 @@
-(function (namespace) {
+(function (d, namespace) {
+    var newItem = function (band) { // Funkcija stvara novi Node preko band entry-ja unutar diva sa id-jem "list"
+        var list = d.querySelector("#app").querySelector("div#list");
+        list.appendChild(namespace.renderNewItem(band, removeItem.bind(this)));
+    }
+
+    var removeItem = function (id) { //Funkcija koja poziva metodu removeById iz objekta koji je referentiran na varijablu this
+        return this.removeById(id);
+    }
+
     namespace.Band = function Band (name, genre) { //Funkcija koja sluzi za kreiranje objekta preko objektnog konstruktora
         this.bandName = name;
         this.genre = genre;
@@ -31,7 +40,7 @@
                     findId(); //Ako postoji, funkcija se ponovno poziva
                 } else {
                     return;
-                }}())
+                }}());
                 return id;
             }(usedIds)); //Closure-ov variable scope su globalne varijable, lokalne varijable i varijable vanjske funkcije i zato smo morali dodati userIds u parametre
             this.lastId = bandId;
@@ -39,8 +48,8 @@
             var newBand = band;
             newBand.id = bandId;
             list.push(newBand);
-            namespace.newItem.call(this, newBand); //Stvara referencu na objekt bandList preko this varijable na newItem funkciju
+            newItem.call(this, newBand); //Stvara referencu na objekt bandList preko this varijable na newItem funkciju
             return this; //Kada returnamo this omogućujemo kaskadne metode
         }
     }
-})(window.namespace = window.namespace || {});
+})(document, window.namespace = window.namespace || {});

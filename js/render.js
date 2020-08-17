@@ -16,15 +16,7 @@
         }
         return element;
     }
-
-    namespace.renderTree = function (list) { //Referenca na document.querySelect("#app"); 
-        this.appendChild(renderTitle("Vanilla Band Database"));
-        this.appendChild(renderNew(list));
-        this.appendChild(renderItem("hr", null))
-        this.appendChild(renderList());
-        return this;
-    }
-
+    
     var renderTitle = function (title) { // Funkcija koja rendera title stranice
         d.title = title;
         var titleDiv = renderItem("div", title, {attributes: {"class": "title"}});
@@ -142,9 +134,7 @@
         return listDiv;
     }
 
-    namespace.newItem = function (band) { // Funkcija stvara novi Node preko band entry-ja unutar diva sa id-jem "list"
-        var list = d.querySelector("#app").querySelector("div#list");
-
+    namespace.renderNewItem = function (band, removeItem) {
         var itemDiv = renderItem("div", null, {attributes: {"id": `item${band.id}`, "class": "band-item"} });
 
         var infoDiv = renderItem("div", null, {attributes: {"class": 'info'}});
@@ -158,7 +148,7 @@
 
         actionsDiv.appendChild(
             renderItem("button", "Remove", {events: {"click": () => {
-                if(confirm("Are you sure you want to delete this item?")) removeItem.call(this, band.id); //this je već referenca na objekt bandList unutar Bands funkcije i dodaje se referenca na this unutar removeItem funkcije
+                if(confirm("Are you sure you want to delete this item?")) removeItem(band.id); //this je već referenca na objekt bandList unutar Bands funkcije i dodaje se referenca na this unutar removeItem funkcije
             }}})
         );
 
@@ -166,10 +156,15 @@
         infoDiv.appendChild(genreSpan);
         itemDiv.appendChild(infoDiv);
         itemDiv.appendChild(actionsDiv);
-        list.appendChild(itemDiv);
+
+        return itemDiv;
     }
 
-    var removeItem = function (id) { //Funkcija koja poziva metodu removeById iz objekta koji je referentiran na varijablu this
-        return this.removeById(id);
+    namespace.renderTree = function (list) { //Referenca na document.querySelect("#app"); 
+        this.appendChild(renderTitle("Vanilla Band Database"));
+        this.appendChild(renderNew(list));
+        this.appendChild(renderItem("hr", null))
+        this.appendChild(renderList());
+        return this;
     }
 })(document, window.namespace = window.namespace || {})
