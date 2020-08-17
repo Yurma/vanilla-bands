@@ -1,13 +1,4 @@
 (function (d, namespace) {
-    var newItem = function (band) { // Funkcija stvara novi Node preko band entry-ja unutar diva sa id-jem "list"
-        var list = d.querySelector("#app").querySelector("div#list");
-        list.appendChild(namespace.renderNewItem(band, removeItem.bind(this)));
-    }
-
-    var removeItem = function (id) { //Funkcija koja poziva metodu removeById iz objekta koji je referentiran na varijablu this
-        return this.removeById(id);
-    }
-
     namespace.Band = function Band (name, genre) { //Funkcija koja sluzi za kreiranje objekta preko objektnog konstruktora
         this.bandName = name;
         this.genre = genre;
@@ -23,15 +14,7 @@
         let list = [];
         let usedIds = [];
         this.lastId = null;
-        this.getList = function() {
-            return list;
-        }
-        this.removeById = function(id) {
-            list = list.filter(band => band.id !== id); //Iz liste se ukloni item sa id-jem iz parametra
-            document.querySelector("#app").querySelector("div#list").querySelector(`div#item${id}`).remove(); //Ukloni se node koji ima id iz parametra 
-            return true;
-        }
-        this.addList = function(band) {
+        this.newId = function() {
             var bandId = (function (ids) { //Moja implementacija stvaranja unique id-jeva
                 var id = 0;
                 (function findId () { //Samoprozivna funkcija koja se poziva sve dok ne naiđe na id koji ne postoji unutar usedIds arraya
@@ -45,11 +28,19 @@
             }(usedIds)); //Closure-ov variable scope su globalne varijable, lokalne varijable i varijable vanjske funkcije i zato smo morali dodati userIds u parametre
             this.lastId = bandId;
             usedIds.push(bandId);
-            var newBand = band;
-            newBand.id = bandId;
-            list.push(newBand);
-            newItem.call(this, newBand); //Stvara referencu na objekt bandList preko this varijable na newItem funkciju
-            return this; //Kada returnamo this omogućujemo kaskadne metode
+            return bandId;
+        }
+        this.pushItem = function(item) {
+            list.push(item);
+            return this;
+        }
+        this.getList = function() {
+            return list;
+        }
+        this.removeById = function(id) {
+            list = list.filter(band => band.id !== id); //Iz liste se ukloni item sa id-jem iz parametra
+            document.querySelector("#app").querySelector("div#list").querySelector(`div#item${id}`).remove(); //Ukloni se node koji ima id iz parametra 
+            return true;
         }
     }
 })(document, window.namespace = window.namespace || {});

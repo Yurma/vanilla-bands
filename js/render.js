@@ -133,8 +133,9 @@
 
         return listDiv;
     }
-
-    namespace.renderNewItem = function (band, removeItem) {
+    
+    var newItem = function (band) { // Funkcija stvara novi Node preko band entry-ja unutar diva sa id-jem "list"
+        var list = d.querySelector("#app").querySelector("div#list");
         var itemDiv = renderItem("div", null, {attributes: {"id": `item${band.id}`, "class": "band-item"} });
 
         var infoDiv = renderItem("div", null, {attributes: {"class": 'info'}});
@@ -148,7 +149,7 @@
 
         actionsDiv.appendChild(
             renderItem("button", "Remove", {events: {"click": () => {
-                if(confirm("Are you sure you want to delete this item?")) removeItem(band.id); //this je već referenca na objekt bandList unutar Bands funkcije i dodaje se referenca na this unutar removeItem funkcije
+                if(confirm("Are you sure you want to delete this item?")) removeItem.call(this, band.id); //this je već referenca na objekt bandList unutar Bands funkcije i dodaje se referenca na this unutar removeItem funkcije
             }}})
         );
 
@@ -157,7 +158,19 @@
         itemDiv.appendChild(infoDiv);
         itemDiv.appendChild(actionsDiv);
 
-        return itemDiv;
+        list.appendChild(itemDiv);
+    }
+
+    var removeItem = function (id) { //Funkcija koja poziva metodu removeById iz objekta koji je referentiran na varijablu this
+        return this.removeById(id);
+    }
+
+    namespace.Bands.prototype.addList = function(band) {
+        var newBand = band;
+        newBand.id = this.newId();
+        this.pushItem(newBand);
+        newItem.call(this, newBand); //Stvara referencu na objekt bandList preko this varijable na newItem funkciju
+        return this; //Kada returnamo this omogućujemo kaskadne metode
     }
 
     namespace.renderTree = function (list) { //Referenca na document.querySelect("#app"); 
